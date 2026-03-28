@@ -49,30 +49,21 @@ def show_exam_result(request, course_id, submission_id):
     submission = get_object_or_404(Submission, pk=submission_id)
 
     questions = Question.objects.filter(lesson__course=course).prefetch_related('choice_set')
-    selected_choice_ids = list(submission.choices.values_list('id', flat=True))
-
-    correct_questions = 0
-    total_grade = 0
-    earned_grade = 0
+    selected_choice_ids = submission.selected_choice_ids()
+    question_results = submission.question_results(course)
     for question in questions:
-        scored = question.is_get_score(selected_choice_ids)
-        question.passed = scored
-        total_grade += question.grade
-        if scored:
-            correct_questions += 1
-            earned_grade += question.grade
+        question.passed = question_results.get(question.id, False)
 
-    score = (earned_grade / total_grade) * 100 if total_grade > 0 else 0
+    score = submission.percentage(course)
 
     return render(request, 'onlinecourse/exam_result.html', {
         'course': course,
         'score': score,
-        'correct': correct_questions,
-        'total': questions.count(),
+        'correct': submission.correct_question_count(course),
+        'total': submission.total_questions(course),
         'questions': questions,
         'selected_choice_ids': selected_choice_ids,
-        'question_results': question_results,
-        'earned_grade': earned_grade,
-        'total_grade': total_grade,
+        'earned_grade': submission.earned_grade(course),
+        'total_grade': submission.total_grade(course),
         'submission': submission,
     })
