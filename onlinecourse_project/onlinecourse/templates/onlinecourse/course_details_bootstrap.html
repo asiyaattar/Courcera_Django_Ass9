@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ course.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+    <a href="{% url 'course_list' %}">&larr; Back to courses</a>
+
+<h1>{{ course.name }}</h1>
+
+{% for lesson in lessons %}
+<div class="card mt-3">
+    <div class="card-body">
+        <h4>{{ lesson.title }}</h4>
+        <p>{{ lesson.content }}</p>
+    </div>
+</div>
+{% endfor %}
+
+</body>
+</html>

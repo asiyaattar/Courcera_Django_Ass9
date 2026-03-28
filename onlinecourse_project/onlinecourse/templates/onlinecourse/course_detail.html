@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ course.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+    <a href="{% url 'course_list' %}">&larr; Back to courses</a>
+    <h1 class="mt-3">{{ course.name }}</h1>
+
+    {% if lessons %}
+        <h2 class="mt-4">Lessons</h2>
+        {% for lesson in lessons %}
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h4>{{ lesson.title }}</h4>
+                    <p>{{ lesson.content }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">No lessons available for this course.</p>
+    {% endif %}
+
+    <h2 class="mt-5">Quiz</h2>
+    <form method="post" action="{% url 'submit' course.id %}">
+        {% csrf_token %}
+        {% if questions %}
+            {% for question in questions %}
+                <div class="card mt-3">
+                    <div class="card-body">
+                        <h5>{{ forloop.counter }}. {{ question.question_text }}</h5>
+                        {% for choice in question.choice_set.all %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="choice" value="{{ choice.id }}" id="choice-{{ choice.id }}">
+                                <label class="form-check-label" for="choice-{{ choice.id }}">{{ choice.choice_text }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-4">Submit Quiz</button>
+        {% else %}
+            <p class="text-muted">There are no questions available for this course.</p>
+        {% endif %}
+    </form>
+</body>
+</html>

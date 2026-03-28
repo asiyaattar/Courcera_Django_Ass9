@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exam Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+    <a href="{% url 'course_detail' course.id %}">&larr; Back to course</a>
+    <div class="mt-4 p-4 bg-light rounded">
+        <h1>🎉 Exam Result</h1>
+        {% if score is not None %}
+            <p class="lead">Score: {{ score|floatformat:2 }}%</p>
+            <p>{{ correct }} / {{ total }} correct</p>
+        {% else %}
+            <p class="text-muted">No result is available yet. Please submit the quiz first.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
